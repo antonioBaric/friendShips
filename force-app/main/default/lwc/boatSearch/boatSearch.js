@@ -3,46 +3,26 @@ import getBoats from '@salesforce/apex/BoatDataService.getBoats';
 
 export default class BoatSearch extends LightningElement {
 	isLoading = false;
+	boatTypeId;
 
 	// Handles loading event
 	handleLoading() {
 		this.isLoading = true;
-		const loadingEvent = new CustomEvent('loading', {
-			detail: {
-				isLoading: this.isLoading
-			}
-		});
-		this.dispatchEvent(loadingEvent);
 	}
-	
+
 	// Handles done loading event
 	handleDoneLoading() {
 		this.isLoading = false;
-		const doneloading = new CustomEvent('doneloading', {
-			detail: {
-				isLoading: this.isLoading
-			}
-		});
-		this.dispatchEvent(doneloading);
 	}
 	
 	// Handles search boat event
 	// This custom event comes from the form
-	// A.B: Try to use async - await?
+	// A.B: Try to use async - await? ...Also, what is the purpose of this function if it doesn't forward the data!?
 	searchBoats(event) {
-		this.handleLoading();
-
-		return getBoats({ boatTypeId: event.detail.boatTypeId })
-		.then(boats => {
-// TODO: A.B: Remove later!
-			console.log('FILTERED-BOATS: ', boats);
-		})
-		.catch(error => {
-			console.error(error);
-		})
-		.finally(() => {
-			this.handleDoneLoading();
-		})
+		if (event.detail && event.detail.boatTypeId !== undefined) {
+			this.boatTypeId = event.detail.boatTypeId;
+			this.template.querySelector('c-boat-search-results').searchBoats(this.boatTypeId);
+		}
 	}
 	
 	createNewBoat() { }

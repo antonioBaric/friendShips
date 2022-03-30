@@ -1,4 +1,5 @@
-import { LightningElement } from 'lwc';
+import getBoats from '@salesforce/apex/BoatDataService.getBoats';
+import { api, LightningElement, wire } from 'lwc';
 
 const SUCCESS_TITLE = 'Success';
 const MESSAGE_SHIP_IT     = 'Ship it!';
@@ -15,19 +16,39 @@ export default class BoatSearchResults extends LightningElement {
   
   // wired message context
   messageContext;
+
   // wired getBoats method 
-  wiredBoats(result) { }
+  @wire(getBoats, { boatTypeId: '$boatTypeId' })
+  wiredBoats(result) {
+	if (result.error) {
+		console.error(error);
+	} else {
+		console.log('wiredBoats: ', result);
+		if (result.data) {
+			this.boats = result.data;
+		}
+	}
+	this.notifyLoading(false);
+  }
   
   // public function that updates the existing boatTypeId property
   // uses notifyLoading
-  searchBoats(boatTypeId) { }
+  @api
+  searchBoats(boatTypeId) {
+	  console.log('Selected boat type id: ', boatTypeId);
+	  this.notifyLoading(true);
+	  this.boatTypeId = boatTypeId;
+  }
   
   // this public function must refresh the boats asynchronously
   // uses notifyLoading
   refresh() { }
   
   // this function must update selectedBoatId and call sendMessageService
-  updateSelectedTile() { }
+  updateSelectedTile(event) {
+	  this.selectedBoatId = event.detail.boatId;
+	  // TODO A.B:sendMessageService
+  }
   
   // Publishes the selected boat Id on the BoatMC.
   sendMessageService(boatId) { 
@@ -49,6 +70,23 @@ export default class BoatSearchResults extends LightningElement {
     .finally(() => {});
   }
   // Check the current value of isLoading before dispatching the doneloading or loading custom event
-  notifyLoading(isLoading) { }
+  notifyLoading(isLoading) {
+	this.isLoading = isLoading;
+	if (this.isLoading) {
+		const loadingEvent = new CustomEvent('loading', {
+			detail: {
+				isLoading: this.isLoading
+			}
+		});
+		this.dispatchEvent(loadingEvent);
+	} else {
+		const doneloading = new CustomEvent('doneloading', {
+			detail: {
+				isLoading: this.isLoading
+			}
+		});
+		this.dispatchEvent(doneloading);
+	}
+  }
 }
 
