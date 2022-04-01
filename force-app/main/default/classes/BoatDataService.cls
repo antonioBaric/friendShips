@@ -114,7 +114,8 @@ public with sharing class BoatDataService {
 		return JSON.serialize(Database.query(query));
 	}
 
-	@AuraEnabled(cacheable=true)
+	//A.B removed cacheable=true
+	@AuraEnabled
 	public static String updateBoatList(Object data){
 		List<Boat__c> boatsForUpdate = (List<Boat__c>) JSON.deserialize(
 			JSON.serialize(data),

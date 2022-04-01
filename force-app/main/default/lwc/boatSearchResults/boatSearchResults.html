@@ -18,6 +18,15 @@
     </lightning-tab>
     <lightning-tab label="Boat Editor">
       <!-- Scrollable div and lightning datatable go here -->
+	  <div class="slds-scrollable_y">
+		<lightning-datatable
+			key-field="Id"
+			data={boats}
+			columns={columns}
+			onsave={handleSave}
+			hide-checkbox-column>
+		</lightning-datatable>
+	  </div>
     </lightning-tab>
      <lightning-tab label="Boats Near Me">
       <!-- boatsNearMe component goes here -->
