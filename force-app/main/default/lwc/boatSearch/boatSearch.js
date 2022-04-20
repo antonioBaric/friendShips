@@ -1,7 +1,8 @@
 import { LightningElement } from 'lwc';
-import getBoats from '@salesforce/apex/BoatDataService.getBoats';
+import { NavigationMixin } from 'lightning/navigation';
 
-export default class BoatSearch extends LightningElement {
+
+export default class BoatSearch extends NavigationMixin(LightningElement) {
 	isLoading = false;
 	boatTypeId;
 
@@ -25,5 +26,13 @@ export default class BoatSearch extends LightningElement {
 		}
 	}
 	
-	createNewBoat() { }
+	createNewBoat() {
+		this[NavigationMixin.Navigate]({
+            type: 'standard__objectPage',
+            attributes: {
+                objectApiName: 'Boat__c',
+                actionName: 'new'
+            }
+        });
+	}
 }
