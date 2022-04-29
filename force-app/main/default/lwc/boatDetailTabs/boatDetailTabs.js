@@ -48,12 +48,11 @@ export default class BoatDetailTabs extends NavigationMixin(LightningElement) {
     subscription = null;
     
     // Subscribe to the message channel
-    subscribeToMessageChannel() {
-        // local boatId must receive the recordId from the message
+    subscribeMC() {
         if (this.subscription) {
             return;
         }
-        // Subscribe to the message channel to retrieve the recordId and explicitly assign it to boatId.
+
         this.subscription = subscribe(
             this.messageContext,
             BOATMC,
@@ -64,7 +63,7 @@ export default class BoatDetailTabs extends NavigationMixin(LightningElement) {
     
     // Calls subscribeMC()
     connectedCallback() {
-        this.subscribeToMessageChannel();
+        this.subscribeMC();
     }
     
     // Navigates to record page
